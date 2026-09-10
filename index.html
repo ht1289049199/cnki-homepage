@@ -1,12 +1,284 @@
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CNKI 中国知网 · 学术发现与知识服务</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CNKI 中国知网 · 学术发现与知识服务</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --navy: #091b3f;
+      --blue: #1353b3;
+      --cyan: #10c1d2;
+      --dark: #0e1625;
+      --gray: #596779;
+      --bg-light: #f6f9fd;
+      --bg-card: #f7faff;
+      --border: #dbe3ed;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: 'Noto Sans SC', Inter, sans-serif; margin: 0; background: var(--bg-light); color: var(--dark); }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    input { font-family: inherit; }
+    .header { background: #fff; border-bottom: 1px solid var(--border); }
+    .header-inner { max-width: 1440px; margin: 0 auto; padding: 0 120px; height: 72px; display: flex; align-items: center; gap: 40px; }
+    .logo-box { display: flex; align-items: center; gap: 8px; margin-right: 16px; flex-shrink: 0; }
+    .logo-square { width: 30px; height: 30px; border-radius: 8px; background: var(--blue); display: inline-block; }
+    .logo-text { display: flex; flex-direction: column; line-height: 1; }
+    .logo-name { font-size: 23px; font-weight: 600; color: var(--dark); font-family: Inter, sans-serif; }
+    .logo-sub { font-size: 10px; color: var(--gray); margin-top: 3px; }
+    .nav { display: flex; align-items: center; gap: 36px; flex: 1; }
+    .nav a { font-size: 14px; color: var(--dark); transition: opacity .2s; }
+    .nav a:hover { opacity: .7; }
+    .nav a.active { font-weight: 600; }
+    .header-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+    .ip-badge { display: inline-flex; align-items: center; padding: 0 16px; height: 28px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--blue); border: 1px solid rgba(19,83,179,.13); background: #fff; }
+    .btn-login { font-size: 14px; color: var(--dark); }
+    .btn-register { display: inline-flex; align-items: center; justify-content: center; height: 34px; padding: 0 20px; border-radius: 7px; font-size: 14px; font-weight: 600; color: #fff; background: var(--navy); transition: opacity .2s; }
+    .btn-register:hover { opacity: .9; }
+    .hero { background: var(--navy); min-height: 480px; position: relative; overflow: hidden; }
+    .hero-circle1 { position: absolute; width: 270px; height: 270px; top: 55px; right: 345px; background: rgba(18,64,125,.55); border-radius: 50%; pointer-events: none; }
+    .hero-circle2 { position: absolute; width: 190px; height: 190px; top: 202px; right: 240px; background: rgba(15,189,209,.14); border-radius: 50%; pointer-events: none; }
+    .hero-inner { max-width: 1440px; margin: 0 auto; padding: 0 120px; position: relative; }
+    .hero h1 { padding-top: 102px; font-size: 34px; font-weight: 600; color: #fff; white-space: nowrap; line-height: normal; margin: 0; }
+    .hero-sub { margin-top: 10px; font-size: 16px; color: #fff; }
+    .search-tabs { margin-top: 30px; display: inline-flex; align-items: center; gap: 32px; padding: 0 20px; height: 42px; border-radius: 999px; background: rgba(255,255,255,.1); }
+    .search-tab { font-size: 14px; font-weight: 600; color: #fff; white-space: nowrap; opacity: .7; transition: opacity .2s; }
+    .search-tab.cyan { color: var(--cyan); font-family: Inter, sans-serif; }
+    .search-tab.active { opacity: 1; }
+    .search-box { margin-top: 16px; display: flex; align-items: center; height: 70px; border-radius: 12px; background: #fff; max-width: 920px; }
+    .search-field { display: flex; align-items: center; gap: 4px; padding-left: 20px; padding-right: 12px; font-size: 14px; color: var(--gray); flex-shrink: 0; }
+    .search-divider { width: 1px; height: 36px; background: #d9e3f0; flex-shrink: 0; margin: 0 4px; }
+    .search-input { flex: 1; padding: 0 16px; font-size: 15px; color: var(--dark); border: none; outline: none; background: transparent; }
+    .search-input::placeholder { color: var(--gray); }
+    .search-btn { height: 50px; min-width: 114px; padding: 0 32px; border-radius: 8px; font-size: 16px; font-weight: 600; color: #fff; background: var(--blue); margin-right: 10px; flex-shrink: 0; transition: opacity .2s; }
+    .search-btn:hover { opacity: .9; }
+    .search-links { margin-top: 16px; display: flex; align-items: center; gap: 8px; font-size: 14px; }
+    .search-links a { color: #fff; }
+    .search-links a:hover { text-decoration: underline; }
+    .search-links .dot { color: var(--cyan); }
+    .hero-hot { margin-top: 32px; font-size: 13px; color: var(--gray); padding-bottom: 40px; }
+    .ai-card { position: absolute; top: 105px; right: 120px; width: 190px; height: 205px; background: rgba(255,255,255,.09); border-radius: 16px; padding: 24px; }
+    .ai-label { display: block; font-size: 15px; font-weight: 600; color: var(--cyan); font-family: Inter, sans-serif; }
+    .ai-title { display: block; font-size: 23px; font-weight: 600; color: #fff; margin-top: 4px; font-family: Inter, sans-serif; }
+    .ai-desc { font-size: 12px; color: #fff; margin-top: 16px; line-height: 1.6; }
+    .ai-btn { margin-top: 16px; display: inline-flex; align-items: center; height: 30px; padding: 0 16px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--cyan); color: var(--navy); transition: opacity .2s; }
+    .ai-btn:hover { opacity: .9; }
+    .tools-section { background: var(--bg-light); padding: 27px 0 32px; }
+    .section-inner { max-width: 1440px; margin: 0 auto; padding: 0 120px; }
+    .section-title { font-size: 20px; font-weight: 600; color: var(--dark); margin: 0; }
+    .section-sub { font-size: 13px; color: var(--gray); margin-top: 8px; }
+    .tools-grid { margin-top: 32px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .tool-card { display: flex; align-items: center; gap: 12px; padding: 0 24px; height: 92px; border-radius: 12px; background: #fff; border: 1px solid var(--border); transition: box-shadow .2s; }
+    .tool-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.1); }
+    .tool-icon { font-size: 25px; flex-shrink: 0; }
+    .tool-info { flex: 1; min-width: 0; }
+    .tool-name { font-size: 16px; font-weight: 600; color: var(--dark); }
+    .tool-desc { font-size: 12px; color: var(--gray); margin-top: 4px; }
+    .tool-arrow { font-size: 18px; font-weight: 600; flex-shrink: 0; }
+    .resource-section { background: #fff; padding: 34px 0 32px; }
+    .resource-header { display: flex; align-items: flex-start; justify-content: space-between; }
+    .resource-title { font-size: 22px; font-weight: 600; color: var(--dark); margin: 0; }
+    .resource-sub { font-size: 13px; color: var(--gray); margin-top: 8px; }
+    .resource-all { font-size: 13px; font-weight: 600; color: var(--blue); margin-top: 8px; white-space: nowrap; }
+    .resource-grid { margin-top: 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .resource-card { display: flex; align-items: center; gap: 16px; padding: 0 20px; height: 68px; border-radius: 10px; background: var(--bg-card); transition: box-shadow .2s; }
+    .resource-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    .resource-num { font-size: 12px; font-weight: 600; color: var(--cyan); font-family: Inter, sans-serif; flex-shrink: 0; width: 28px; }
+    .resource-info { flex: 1; min-width: 0; }
+    .resource-name { font-size: 15px; font-weight: 600; color: var(--dark); }
+    .resource-desc { font-size: 12px; color: var(--gray); margin-top: 2px; }
+    .resource-chevron { font-size: 20px; color: var(--blue); }
+    .resource-footer { margin-top: 24px; font-size: 13px; color: var(--gray); }
+    .stats-section { background: var(--bg-light); padding: 34px 0 48px; }
+    .stats-title { font-size: 22px; font-weight: 600; color: var(--dark); margin: 0; }
+    .stats-grid { margin-top: 32px; display: flex; gap: 20px; }
+    .stats-dark-card { background: var(--navy); border-radius: 16px; padding: 36px; width: 500px; min-height: 270px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: space-between; }
+    .stats-cyan-label { font-size: 15px; font-weight: 600; color: var(--cyan); }
+    .stats-dark-title { font-size: 22px; font-weight: 600; color: #fff; margin-top: 8px; }
+    .stats-numbers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px 48px; margin-top: 24px; }
+    .stat-label { font-size: 12px; color: #fff; }
+    .stat-value { font-size: 20px; font-weight: 600; color: var(--cyan); margin-top: 4px; font-family: Inter, sans-serif; }
+    .stats-right { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+    .scholar-card, .trends-card { background: #fff; border-radius: 14px; padding: 28px 32px; flex: 1; display: flex; align-items: center; justify-content: space-between; }
+    .card-title { font-size: 16px; font-weight: 600; color: var(--dark); }
+    .card-sub { font-size: 13px; color: var(--gray); margin-top: 8px; }
+    .btn-blue { display: inline-flex; align-items: center; justify-content: center; height: 36px; padding: 0 24px; border-radius: 999px; font-size: 12px; font-weight: 600; color: #fff; background: var(--blue); white-space: nowrap; margin-left: 24px; transition: opacity .2s; flex-shrink: 0; }
+    .btn-blue:hover { opacity: .9; }
+    .btn-light-blue { display: inline-flex; align-items: center; justify-content: center; height: 34px; padding: 0 20px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--blue); background: #e8f5ff; white-space: nowrap; margin-left: 24px; transition: opacity .2s; flex-shrink: 0; }
+    .btn-light-blue:hover { opacity: .85; }
+    .hot-tags { display: flex; flex-wrap: wrap; gap: 16px 16px; margin-top: 8px; }
+    .hot-tag { font-size: 13px; font-weight: 600; color: var(--blue); }
+    .footer { background: var(--navy); padding: 42px 0 32px; }
+    .footer-inner { max-width: 1440px; margin: 0 auto; padding: 0 120px; }
+    .footer-top { display: flex; gap: 64px; }
+    .footer-brand { flex-shrink: 0; min-width: 200px; }
+    .footer-brand-name { font-size: 22px; font-weight: 600; color: #fff; font-family: Inter, sans-serif; }
+    .footer-brand-sub { font-size: 12px; color: var(--gray); margin-top: 8px; }
+    .footer-brand-desc { font-size: 13px; color: #fff; margin-top: 16px; }
+    .footer-cols { display: flex; gap: 80px; flex: 1; }
+    .footer-col-title { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 16px; }
+    .footer-links { display: flex; flex-direction: column; gap: 8px; }
+    .footer-links a { font-size: 12px; color: var(--gray); transition: color .2s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-divider { height: 1px; background: #334563; margin: 48px 0 20px; }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; }
+    .footer-copy { font-size: 11px; color: var(--gray); }
+    .footer-legal { display: flex; align-items: center; gap: 16px; }
+    .footer-legal a { font-size: 11px; color: var(--gray); transition: color .2s; }
+    .footer-legal a:hover { color: #fff; }
+    .footer-legal span { color: var(--gray); }
+    @media (max-width: 1100px) {
+      .header-inner, .hero-inner, .section-inner, .footer-inner { padding: 0 24px; }
+      .tools-grid { grid-template-columns: repeat(2, 1fr); }
+      .resource-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid { flex-direction: column; }
+      .stats-dark-card { width: 100%; }
+      .hero-circle1, .hero-circle2, .ai-card { display: none; }
+    }
+  </style>
+</head>
+<body>
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo-box">
+      <span class="logo-square"></span>
+      <div class="logo-text">
+        <span class="logo-name">CNKI</span>
+        <span class="logo-sub">中国知网 · 学术发现与知识服务</span>
+      </div>
+    </a>
+    <nav class="nav">
+      <a href="#" class="active">文献检索</a>
+      <a href="#">知识元检索</a>
+      <a href="#">AI 增强检索</a>
+      <a href="#">出版物导航</a>
+    </nav>
+    <div class="header-right">
+      <span class="ip-badge">机构 IP 已识别</span>
+      <a href="#" class="btn-login">登录</a>
+      <a href="#" class="btn-register">注册</a>
+    </div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-circle1"></div>
+  <div class="hero-circle2"></div>
+  <div class="hero-inner">
+    <h1>让每一次研究，都更接近答案</h1>
+    <p class="hero-sub">面向研究者的一体化学术资源发现与知识服务平台</p>
+    <div class="search-tabs">
+      <button class="search-tab active" onclick="setTab(0)">文献检索</button>
+      <button class="search-tab cyan" onclick="setTab(1)">CNKI AI</button>
+      <button class="search-tab" onclick="setTab(2)">知识元检索</button>
+    </div>
+    <div class="search-box">
+      <button class="search-field">主题 <span style="font-size:11px;margin-left:4px">⌄</span></button>
+      <div class="search-divider"></div>
+      <input class="search-input" type="text" placeholder="输入关键词、研究问题或作者名称" />
+      <button class="search-btn">搜索</button>
+    </div>
+    <div class="search-links">
+      <a href="#">高级检索</a><span class="dot"> · </span><a href="#">专业检索</a><span class="dot"> · </span><a href="#">作者发文检索</a>
+    </div>
+    <p class="hero-hot">热门：人工智能 · 数字经济 · 碳中和 · 新质生产力</p>
+  </div>
+  <div class="ai-card">
+    <span class="ai-label">CNKI AI</span>
+    <span class="ai-title">研究助手</span>
+    <p class="ai-desc">理解你的研究问题<br>推荐相关主题与文献</p>
+    <a href="#" class="ai-btn">开始提问 →</a>
+  </div>
+</section>
+<section class="tools-section">
+  <div class="section-inner">
+    <h2 class="section-title">研究效率工具</h2>
+    <p class="section-sub">从检索、阅读到创作，连接完整科研工作流</p>
+    <div class="tools-grid">
+      <a href="#" class="tool-card"><span class="tool-icon" style="color:#1353b3">◈</span><div class="tool-info"><div class="tool-name">知识元检索</div><div class="tool-desc">直达概念、方法与数据</div></div><span class="tool-arrow" style="color:#1353b3">→</span></a>
+      <a href="#" class="tool-card"><span class="tool-icon" style="color:#10c1d2">⌁</span><div class="tool-info"><div class="tool-name">选题分析</div><div class="tool-desc">发现研究热点与趋势</div></div><span class="tool-arrow" style="color:#10c1d2">→</span></a>
+      <a href="#" class="tool-card"><span class="tool-icon" style="color:#1353b3">↗</span><div class="tool-info"><div class="tool-name">引文检索</div><div class="tool-desc">追溯学术影响力</div></div><span class="tool-arrow" style="color:#1353b3">→</span></a>
+      <a href="#" class="tool-card"><span class="tool-icon" style="color:#10c1d2">✦</span><div class="tool-info"><div class="tool-name">知网研学</div><div class="tool-desc">管理文献，辅助创作</div></div><span class="tool-arrow" style="color:#10c1d2">→</span></a>
+    </div>
+  </div>
+</section>
+<section class="resource-section">
+  <div class="section-inner">
+    <div class="resource-header">
+      <div><h2 class="resource-title">学术资源导航</h2><p class="resource-sub">按资源类型与学科，快速抵达需要的数据库</p></div>
+      <a href="#" class="resource-all">全部资源 ›</a>
+    </div>
+    <div class="resource-grid">
+      <a href="#" class="resource-card"><span class="resource-num">01</span><div class="resource-info"><div class="resource-name">期刊</div><div class="resource-desc">收录逾 8,000 种期刊</div></div><span class="resource-chevron">›</span></a>
+      <a href="#" class="resource-card"><span class="resource-num">02</span><div class="resource-info"><div class="resource-name">学位论文</div><div class="resource-desc">博硕士学术成果</div></div><span class="resource-chevron">›</span></a>
+      <a href="#" class="resource-card"><span class="resource-num">03</span><div class="resource-info"><div class="resource-name">会议</div><div class="resource-desc">前沿会议论文集</div></div><span class="resource-chevron">›</span></a>
+      <a href="#" class="resource-card"><span class="resource-num">04</span><div class="resource-info"><div class="resource-name">报纸</div><div class="resource-desc">重要时政与行业报纸</div></div><span class="resource-chevron">›</span></a>
+      <a href="#" class="resource-card"><span class="resource-num">05</span><div class="resource-info"><div class="resource-name">专利</div><div class="resource-desc">创新技术与专利</div></div><span class="resource-chevron">›</span></a>
+      <a href="#" class="resource-card"><span class="resource-num">06</span><div class="resource-info"><div class="resource-name">标准</div><div class="resource-desc">国家与行业标准</div></div><span class="resource-chevron">›</span></a>
+    </div>
+    <p class="resource-footer">168 个学科分类 · 经济与管理 / 医药卫生 / 工程科技 / 人文社科 / 农业科技</p>
+  </div>
+</section>
+<section class="stats-section">
+  <div class="section-inner">
+    <h2 class="stats-title">资源规模与研究发现</h2>
+    <p class="section-sub">权威资源覆盖，帮助你把握前沿脉络</p>
+    <div class="stats-grid">
+      <div class="stats-dark-card">
+        <div><div class="stats-cyan-label">中国知识基础设施</div><div class="stats-dark-title">覆盖全学科的学术资源库</div></div>
+        <div class="stats-numbers">
+          <div><div class="stat-label">期刊论文</div><div class="stat-value">6,700 万+</div></div>
+          <div><div class="stat-label">学位论文</div><div class="stat-value">620 万+</div></div>
+          <div><div class="stat-label">会议论文</div><div class="stat-value">410 万+</div></div>
+          <div><div class="stat-label">报纸文献</div><div class="stat-value">2,100 万+</div></div>
+        </div>
+      </div>
+      <div class="stats-right">
+        <div class="scholar-card">
+          <div><div class="card-title">CNKI Scholar · 全球学术资源</div><div class="card-sub">连接 60+ 国家和地区、650+ 出版社，中外文献一站发现</div></div>
+          <a href="#" class="btn-blue">探索国际文献 →</a>
+        </div>
+        <div class="trends-card">
+          <div>
+            <div class="card-title">本周研究热点</div>
+            <div class="hot-tags"><span class="hot-tag"># 人工智能治理</span><span class="hot-tag"># 高质量发展</span><span class="hot-tag"># 低空经济</span><span class="hot-tag"># 碳达峰</span></div>
+            <div class="card-sub" style="margin-top:8px">基于近期检索与学术成果聚合</div>
+          </div>
+          <a href="#" class="btn-light-blue">查看趋势分析</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-brand-name">CNKI</div>
+        <div class="footer-brand-sub">中国知网 · 学术发现与知识服务</div>
+        <div class="footer-brand-desc">让知识更易获取，让研究更有价值。</div>
+      </div>
+      <div class="footer-cols">
+        <div><div class="footer-col-title">平台服务</div><div class="footer-links"><a href="#">文献检索</a><a href="#">AI 研究助手</a><a href="#">知识元检索</a></div></div>
+        <div><div class="footer-col-title">帮助支持</div><div class="footer-links"><a href="#">使用帮助</a><a href="#">用户反馈</a><a href="#">联系我们</a></div></div>
+        <div><div class="footer-col-title">关于我们</div><div class="footer-links"><a href="#">关于 CNKI</a><a href="#">加入我们</a><a href="#">服务协议</a></div></div>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 同方知网数字出版技术股份有限公司 · 京 ICP 证 040431 号</span>
+      <div class="footer-legal"><a href="#">隐私政策</a><span>·</span><a href="#">网站地图</a></div>
+    </div>
+  </div>
+</footer>
+<script>
+  function setTab(index) {
+    document.querySelectorAll('.search-tab').forEach((t,i) => t.classList.toggle('active', i===index));
+  }
+</script>
+</body>
 </html>
